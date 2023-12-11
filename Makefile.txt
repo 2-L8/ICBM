@@ -1,0 +1,42 @@
+WIN = windows
+LIN = linux
+SCRIPT = ICBM.py
+WIN_EXE = --onefile $(SCRIPT) --distpath $(WIN) --workpath $(WIN) --specpath $(WIN) --clean
+LIN_EXE = --onefile $(SCRIPT) --distpath $(LIN) --workpath $(LIN) --specpath $(LIN) --clean
+
+windows:
+	mkdir $(WIN)
+	pip install pyinstaller
+	pyinstaller $(WIN_EXE)
+	./$(WIN)/ICBM.exe
+
+linux:
+	mkdir $(LIN)
+	pip install pyinstaller
+	pyinstaller $(LIN_EXE)
+	./$(LIN)/ICBM
+
+web: ICBM.py
+	@echo "Creating ICBM.html..."
+	@echo "<!DOCTYPE html>" > ICBM.html
+	@echo "<html lang=\"en\">" >> ICBM.html
+	@echo "<head>" >> ICBM.html
+	@echo "<meta charset=\"UTF-8\">" >> ICBM.html
+	@echo "<title>Title</title>" >> ICBM.html
+	@echo "<link rel=\"stylesheet\" href=\"https://pyscript.net/latest/pyscript.css\" />" >> ICBM.html
+	@echo "<script defer src=\"https://pyscript.net/latest/pyscript.js\"></script>" >> ICBM.html
+	@echo "</head>" >> ICBM.html
+	@echo "<body>" >> ICBM.html
+	@echo "<h1>ICBM</h1>" >> ICBM.html
+	@echo "<py-script>" >> ICBM.html
+	cat ICBM.py >> ICBM.html
+	@echo "</py-script>" >> ICBM.html
+	@echo "</body>" >> ICBM.html
+	@echo "</html>" >> ICBM.html
+	@echo "ICBM.html created successfully."
+	@python -m http.server 8000 -d .
+
+clean:
+	rm -rf $(WIN)
+	rm -rf $(LIN)
+	rm -f ICBM.html
