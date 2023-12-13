@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICBM Game</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <h1>ICBM Game</h1>
+    <div>
+        <label for="angleInput">Enter Angle (in degrees): </label>
+        <input type="number" id="angleInput" step="any">
+        <button onclick="fireMissile()">Fire Missile</button>
+    </div>
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>MILES</th>
+                <th>MILES</th>
+                <th>MILES</th>
+                <th>MILES</th>
+                <th>HEADING</th>
+            </tr>
+            </thead>
+            <tbody id="gameTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    var tableBody = document.getElementById("gameTableBody");
+    var X1, Y1, X, Y, S, S1, N;
+
+    function initializeGame() {
+        X1 = 0;
+        Y1 = 0;
+        X = Math.floor(Math.random() * (999 - 200 + 1)) + 200;
+        Y = Math.floor(Math.random() * (999 - 200 + 1)) + 200;
+        S = Math.floor(Math.random() * (69 - 50 + 1)) + 50;
+        S1 = Math.floor(Math.random() * (69 - 50 + 1)) + 50;
+        N = 1;
+
+        console.log(" ".repeat(26) + "ICBM");
+        console.log(" ".repeat(20) + "CREATIVE COMPUTING");
+        console.log(" ".repeat(18) + "MORRISTOWN, NEW JERSEY");
+        console.log("\n".repeat(3));
+
+        console.log("-------MISSILE-----         " + "--------SAM--------         ------");
+        console.log("MILES" + " ".repeat(8) + "MILES" + " ".repeat(8) + "MILES" + " ".repeat(8) + "MILES" + " ".repeat(8) + "HEADING");
+        console.log("NORTH" + " ".repeat(8) + "EAST" + " ".repeat(9) + "NORTH" + " ".repeat(8) + "EAST" + " ".repeat(9) + "?");
+        console.log("----------------------------------" + "---------------------------");
+    }
+
+    function fireMissile() {
+        if (N <= 50) {
+            var angleInput = document.getElementById("angleInput");
+            var T1 = parseFloat(angleInput.value) / 57.296 || 0;
+            angleInput.value = ""; // Clear input
+
+            var newRow = tableBody.insertRow();
+            newRow.insertCell().textContent = Y;
+            newRow.insertCell().textContent = X;
+            newRow.insertCell().textContent = Y1;
+            newRow.insertCell().textContent = X1;
+            newRow.insertCell().textContent = "?";
+
+            var H = Math.floor(Math.random() * 200) + 1;
+
+            if (H > 4) {
+                X1 = parseInt(X1 + S1 * Math.sin(T1));
+                Y1 = parseInt(Y1 + S1 * Math.cos(T1));
+            }
+
+            if (Math.sqrt(X ** 2 + Y ** 2) > S) {
+                var B = Math.sqrt(X ** 2 + Y ** 2) / 1000;
+                var T = Math.atan2(Y, X);
+                X = parseInt(X - S * Math.cos(T) + Math.floor(Math.random() * 21));
+                Y = parseInt(Y - S * Math.sin(T) + Math.floor(Math.random() * 21));
+                var D = parseInt(Math.sqrt((X - X1) ** 2 + (Y - Y1) ** 2));
+            } else if (Math.sqrt(X ** 2 + Y ** 2) < S) {
+                X = 0;
+                Y = 0;
+            }
+
+            if (D <= 5) {
+                console.log("CONGRATULATIONS!  YOUR SAM CAME WITHIN", D, "MILES OF");
+                console.log("THE ICBM AND DESTROYED IT!");
+                restart();
+                return;
+            }
+
+            console.log("ICBM & SAM NOW", D, "MILES APART");
+
+            if (H === 1) {
+                console.log("TOO BAD.  YOUR SAM FELL TO THE GROUND!");
+                restart();
+            } else if (H === 2) {
+                console.log("YOUR SAM EXPLODED IN MIDAIR!");
+                restart();
+            } else if (H === 3) {
+                console.log("GOOD LUCK-THE ICBM EXPLODED HARMLESSLY IN MIDAIR!");
+                restart();
+            } else if (H === 4) {
+                console.log("GOOD LUCK-THE ICBM TURNED OUT TO BE A FRIENDLY AIRCRAFT!");
+                restart();
+            }
+
+            N++;
+        }
+    }
+
+    function restart() {
+        var user_input = confirm("DO YOU WANT TO PLAY MORE?");
+        if (user_input) {
+            tableBody.innerHTML = ""; // Clear table
+            initializeGame();
+        } else {
+            window.close();
+        }
+    }
+
+    // Initialize the game on page load
+    initializeGame();
+</script>
+
+</body>
+</html>
